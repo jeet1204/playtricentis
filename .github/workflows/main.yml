@@ -1,32 +1,49 @@
-name: Playwright Tests on Windows
+name: Playwright Manual Run
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:  # Allows manual triggering from GitHub UI
 
 jobs:
   test:
     runs-on: windows-latest
 
     steps:
+      - name: 🛎️ Echo: Checking out code
+        run: echo "Checking out repository..."
+
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: 🛠️ Echo: Setting up Node.js
+        run: echo "Setting up Node.js..."
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
+      - name: 📦 Echo: Installing dependencies
+        run: echo "Installing npm dependencies..."
+
       - name: Install dependencies
         run: npm ci
+
+      - name: 🌐 Echo: Installing Playwright browsers
+        run: echo "Installing Playwright and required browsers..."
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests with 4 workers
-        run: npx playwright test --workers=2
+      - name: 🧪 Echo: Running Playwright tests
+        run: echo "Running Playwright tests with 2 workers and verbose logging..."
+
+      - name: Run Playwright Tests
+        run: npx playwright test --reporter=line --workers=2
+        env:
+          DEBUG: pw:api
+
+      - name: 📁 Echo: Uploading test report
+        run: echo "Uploading Playwright HTML test report..."
 
       - name: Upload Playwright test report
         if: always()
