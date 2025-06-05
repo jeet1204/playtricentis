@@ -78,7 +78,7 @@ test('verify filter', async({page})=>
   await homepage.goToCategory('Computers','Desktop');
 });
 
-test.only('verify cart total', async({page})=>
+test('verify cart total', async({page})=>
 {
   const homepage = new homePage(page);
   const productpage = new productDetailPage(page);
