@@ -1,36 +1,53 @@
-name: Playwright Tests on Windows
+name: Playwright Manual Run
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+
 
     steps:
+      - name: Checking out code
+        run: echo "Checking out repository..."
+
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Setting up Node.js
+        run: echo "Setting up Node.js..."
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
+      - name:  Installing dependencies
+        run: echo "Installing npm dependencies..."
+
       - name: Install dependencies
         run: npm ci
+
+      - name: Installing Playwright browsers
+        run: echo "Installing Playwright and required browsers..."
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests with 4 workers
-        run: npx playwright test --workers=2
+      - name: Running Playwright tests
+        run: echo "Running Playwright tests with 4 workers and verbose logging..."
+
+      - name: Run Playwright Tests
+        run: npx playwright test --reporter=line --workers=4
+        env:
+          DEBUG: pw:api
+
+      - name: Uploading test report
+        run: echo "Uploading Playwright HTML test report..."
 
       - name: Upload Playwright test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: playwright-report/
