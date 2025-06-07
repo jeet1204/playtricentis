@@ -21,6 +21,7 @@ export class cartpage{
 
     async verifyProductCart(product:string)
     {
+        await this.cartProduct.waitFor();
         await expect(this.cartProduct).toHaveText(product);
     }
 
